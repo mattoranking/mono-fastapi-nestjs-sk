@@ -19,7 +19,7 @@ class APITag(StrEnum):
 
     **Example**
         ```py
-        router = APIRouter(prefix="/clients", tags=["products", APITag.public])
+        router = APIRouter(prefix="/users", tags=["users", APITag.public])
         ```
     """
 
@@ -51,10 +51,10 @@ class OpenAPIParameters(TypedDict):
 
 
 OPENAPI_PARAMETERS: OpenAPIParameters = {
-    "title": "faskplusai API",
-    "summary": "faskplusai HTTP API",
+    "title": "FaskPlusAI API",
+    "summary": "FaskPlusAI HTTP API",
     "version": "0.1.0",
-    "description": "Discover all of the ways you can interact with the faskplusai API",
+    "description": "Discover all of the ways you can interact with the FaskPlusAI API",
     "docs_url": None
     if settings.is_environment(
         {Environment.preview, Environment.staging, Environment.production}

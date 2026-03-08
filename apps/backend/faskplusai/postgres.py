@@ -16,7 +16,7 @@ from faskplusai.database import (
 from faskplusai.database import create_async_engine as _create_async_engine
 from faskplusai.database import create_sync_engine as _create_sync_engine
 
-type ProcessName = Literal["skywise"]
+type ProcessName = Literal["faskplusai"]
 
 
 def create_async_engine(process_name: ProcessName) -> AsyncEngine:
