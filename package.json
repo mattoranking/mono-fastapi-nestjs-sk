@@ -1,5 +1,5 @@
 {
-  "name": "starterapp",
+  "name": "faskplusai",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
@@ -14,7 +14,7 @@
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start:frontend": "pnpm --filter frontend dev",
-    "start:backend": "cd apps/backend && . .venv/bin/activate && uvicorn starterapp.main:app --reload",
+    "start:backend": "cd apps/backend && . .venv/bin/activate && uvicorn faskplusai.main:app --reload",
     "start": "concurrently \"pnpm start:frontend\" \"pnpm start:backend\""
   },
   "dependencies": {

@@ -16,7 +16,7 @@ class Environment(StrEnum):
     production = "production"
 
 
-env = Environment(os.getenv("STARTERAPP_ENV", Environment.development))
+env = Environment(os.getenv("faskplusai_ENV", Environment.development))
 if env == Environment.testing:
     env_file = ".env.testing"
 elif env == Environment.preview:
@@ -70,7 +70,7 @@ class Settings(BaseSettings):
         )
 
     model_config = SettingsConfigDict(
-        env_prefix="starterapp_",
+        env_prefix="faskplusai_",
         env_file_encoding="utf-8",
         case_sensitive=False,
         env_file=env_file,

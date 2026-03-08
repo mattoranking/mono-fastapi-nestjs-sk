@@ -108,7 +108,7 @@ jobs:
           script: |
             set -e
 
-            APP_DIR=/home/deploy/opt/starterapp/production
+            APP_DIR=/home/deploy/opt/faskplusai/production
             mkdir -p $APP_DIR && cd $APP_DIR
 
             # Save current version for potential rollback
@@ -122,11 +122,11 @@ jobs:
             services:
               postgres:
                 image: postgres:15-alpine
-                container_name: starterapp_db_prod
+                container_name: faskplusai_db_prod
                 environment:
                   POSTGRES_USER: ais_user
                   POSTGRES_PASSWORD: \${DB_PASSWORD}
-                  POSTGRES_DB: starterapp_prod
+                  POSTGRES_DB: faskplusai_prod
                 ports:
                   - "127.0.0.1:5432:5432"
                 volumes:
@@ -137,9 +137,9 @@ jobs:
 
               backend:
                 image: ${BACKEND_IMG}
-                container_name: starterapp_backend_prod
+                container_name: faskplusai_backend_prod
                 environment:
-                  DATABASE_URL: postgresql://ais_user:\${DB_PASSWORD}@postgres:5432/starterapp_prod
+                  DATABASE_URL: postgresql://ais_user:\${DB_PASSWORD}@postgres:5432/faskplusai_prod
                   GEMINI_API_KEY: \${GEMINI_API_KEY}
                   ENVIRONMENT: production
                 ports:
@@ -152,7 +152,7 @@ jobs:
 
               frontend:
                 image: ${FRONTEND_IMG}
-                container_name: starterapp_frontend_prod
+                container_name: faskplusai_frontend_prod
                 environment:
                   API_URL: http://backend:8000
                   NODE_ENV: production
@@ -226,7 +226,7 @@ jobs:
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
           envs: BACKEND_IMG_BASE,FRONTEND_IMG_BASE,CR_PAT,GH_ACTOR
           script: |
-            cd /home/deploy/opt/starterapp/production
+            cd /home/deploy/opt/faskplusai/production
 
             if [ -f .version.previous ]; then
               PREV=$(cat .version.previous)

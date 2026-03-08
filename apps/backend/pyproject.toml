@@ -1,7 +1,7 @@
 [project]
-name = "starterapp-backend"
+name = "faskplusai-backend"
 version = "0.1.0"
-description = "FastAPI backend for Starterapp"
+description = "FastAPI backend for faskplusai"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

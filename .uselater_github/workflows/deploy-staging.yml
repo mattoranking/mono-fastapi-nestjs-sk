@@ -125,9 +125,9 @@ jobs:
           DEPLOY_SHA: ${{ github.sha }}
           CR_PAT: ${{ secrets.CR_PAT }}
           GH_ACTOR: ${{ github.actor }}
-          STARTERAPP_POSTGRES_USER: ${{ secrets.STARTERAPP_POSTGRES_USER }}
-          STARTERAPP_POSTGRES_PWD: ${{ secrets.STARTERAPP_POSTGRES_PWD }}
-          STARTERAPP_POSTGRES_STAGING_DATABASE: ${{ secrets.STARTERAPP_POSTGRES_STAGING_DATABASE}}
+          faskplusai_POSTGRES_USER: ${{ secrets.faskplusai_POSTGRES_USER }}
+          faskplusai_POSTGRES_PWD: ${{ secrets.faskplusai_POSTGRES_PWD }}
+          faskplusai_POSTGRES_STAGING_DATABASE: ${{ secrets.faskplusai_POSTGRES_STAGING_DATABASE}}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
           FRONTEND_DOMAIN: ${{ secrets.STAGING_FRONTEND_DOMAIN }}
@@ -136,12 +136,12 @@ jobs:
           host: ${{ secrets.STAGING_HOST }}
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
-          envs: BACKEND_IMG,FRONTEND_IMG,DEPLOY_SHA,CR_PAT,GH_ACTOR,STARTERAPP_POSTGRES_USER,STARTERAPP_POSTGRES_PWD,STARTERAPP_POSTGRES_STAGING_DATABASE,GEMINI_API_KEY,ACME_EMAIL,FRONTEND_DOMAIN,API_DOMAIN
+          envs: BACKEND_IMG,FRONTEND_IMG,DEPLOY_SHA,CR_PAT,GH_ACTOR,faskplusai_POSTGRES_USER,faskplusai_POSTGRES_PWD,faskplusai_POSTGRES_STAGING_DATABASE,GEMINI_API_KEY,ACME_EMAIL,FRONTEND_DOMAIN,API_DOMAIN
           script: |
             set -e
 
             # ---- Ensure shared Traefik is running ----
-            TRAEFIK_DIR=/home/deploy/opt/starterapp/traefik
+            TRAEFIK_DIR=/home/deploy/opt/faskplusai/traefik
             mkdir -p $TRAEFIK_DIR
             docker network create traefik-public 2>/dev/null || true
 
@@ -149,7 +149,7 @@ jobs:
             services:
               traefik:
                 image: traefik:v3.6
-                container_name: starterapp_traefik
+                container_name: faskplusai_traefik
                 command:
                   - "--api.dashboard=false"
                   - "--providers.docker=true"
@@ -196,7 +196,7 @@ jobs:
             cd $TRAEFIK_DIR && docker compose up -d
 
             # ---- Deploy staging ----
-            APP_DIR=/home/deploy/opt/starterapp/staging
+            APP_DIR=/home/deploy/opt/faskplusai/staging
             mkdir -p $APP_DIR && cd $APP_DIR
 
             # Write docker-compose file
@@ -204,18 +204,18 @@ jobs:
             services:
               db:
                 image: postgres:15-alpine
-                container_name: starterapp_db_staging
+                container_name: faskplusai_db_staging
                 environment:
-                  - POSTGRES_USER=${STARTERAPP_POSTGRES_USER}
-                  - POSTGRES_PASSWORD=${STARTERAPP_POSTGRES_PWD}
-                  - POSTGRES_DB=${STARTERAPP_POSTGRES_STAGING_DATABASE}
+                  - POSTGRES_USER=${faskplusai_POSTGRES_USER}
+                  - POSTGRES_PASSWORD=${faskplusai_POSTGRES_PWD}
+                  - POSTGRES_DB=${faskplusai_POSTGRES_STAGING_DATABASE}
                 volumes:
                   - postgres_data:/var/lib/postgresql/data
                 networks:
                   - internal
                 restart: unless-stopped
                 healthcheck:
-                  test: ["CMD-SHELL", "pg_isready -U ${STARTERAPP_POSTGRES_USER}"]
+                  test: ["CMD-SHELL", "pg_isready -U ${faskplusai_POSTGRES_USER}"]
                   interval: 10s
                   timeout: 5s
                   retries: 5
@@ -223,7 +223,7 @@ jobs:
               backend:
                 image: ${BACKEND_IMG}
                 environment:
-                  DATABASE_URL: postgresql://${STARTERAPP_POSTGRES_USER}:${STARTERAPP_POSTGRES_PWD}@db:5432/${STARTERAPP_POSTGRES_STAGING_DATABASE}
+                  DATABASE_URL: postgresql://${faskplusai_POSTGRES_USER}:${faskplusai_POSTGRES_PWD}@db:5432/${faskplusai_POSTGRES_STAGING_DATABASE}
                   GEMINI_API_KEY: ${GEMINI_API_KEY}
                   ENVIRONMENT: staging
                 expose:
@@ -304,9 +304,9 @@ jobs:
 
             # Write .env file
             cat > .env <<EOF
-            STARTERAPP_POSTGRES_USER=${STARTERAPP_POSTGRES_USER}
-            STARTERAPP_POSTGRES_PWD=${STARTERAPP_POSTGRES_PWD}
-            STARTERAPP_POSTGRES_STAGING_DATABASE=${STARTERAPP_POSTGRES_STAGING_DATABASE}
+            faskplusai_POSTGRES_USER=${faskplusai_POSTGRES_USER}
+            faskplusai_POSTGRES_PWD=${faskplusai_POSTGRES_PWD}
+            faskplusai_POSTGRES_STAGING_DATABASE=${faskplusai_POSTGRES_STAGING_DATABASE}
             GEMINI_API_KEY=${GEMINI_API_KEY}
             FRONTEND_DOMAIN=${FRONTEND_DOMAIN}
             API_DOMAIN=${API_DOMAIN}
@@ -329,22 +329,22 @@ jobs:
             echo "Deploying commit ${SHORT_SHA}..."
 
             # Find any existing backend/frontend containers
-            OLD_BACKEND=$(docker ps -q --filter "label=starterapp.service=staging-backend" | head -1)
-            OLD_FRONTEND=$(docker ps -q --filter "label=starterapp.service=staging-frontend" | head -1)
+            OLD_BACKEND=$(docker ps -q --filter "label=faskplusai.service=staging-backend" | head -1)
+            OLD_FRONTEND=$(docker ps -q --filter "label=faskplusai.service=staging-frontend" | head -1)
 
             # Start new containers with commit-hash names
             echo "==> Starting new containers (${SHORT_SHA})..."
 
             docker compose run -d \
               --name "staging-backend-${SHORT_SHA}" \
-              -l "starterapp.service=staging-backend" \
-              -l "starterapp.sha=${SHORT_SHA}" \
+              -l "faskplusai.service=staging-backend" \
+              -l "faskplusai.sha=${SHORT_SHA}" \
               --no-deps backend
 
             docker compose run -d \
               --name "staging-frontend-${SHORT_SHA}" \
-              -l "starterapp.service=staging-frontend" \
-              -l "starterapp.sha=${SHORT_SHA}" \
+              -l "faskplusai.service=staging-frontend" \
+              -l "faskplusai.sha=${SHORT_SHA}" \
               --no-deps frontend
 
             NEW_BACKEND=$(docker ps -q --filter "name=staging-backend-${SHORT_SHA}")
@@ -391,7 +391,7 @@ jobs:
 
             # Show status
             docker compose ps
-            docker ps --filter "label=starterapp.service" --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"
+            docker ps --filter "label=faskplusai.service" --format "table {{.Names}}\t{{.Status}}\t{{.Image}}"
 
       - name: Health check
         uses: appleboy/ssh-action@v1.0.0
@@ -400,7 +400,7 @@ jobs:
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           script: |
-            cd /home/deploy/opt/starterapp/staging
+            cd /home/deploy/opt/faskplusai/staging
             docker compose ps
             if docker compose exec backend python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" 2>/dev/null; then
               echo "Staging backend is healthy!"

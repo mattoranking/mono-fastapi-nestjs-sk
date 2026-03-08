@@ -1,7 +1,7 @@
 from enum import StrEnum
 from typing import Any, NotRequired, TypedDict
 
-from starterapp.config import Environment, settings
+from faskplusai.config import Environment, settings
 
 
 class OpenAPITag(TypedDict):
@@ -32,7 +32,7 @@ class APITag(StrEnum):
             {
                 "name": cls.public,
                 "description": (
-                    "Endpoints shown and documented in the Starterapp API documentation"
+                    "Endpoints shown and documented in the faskplusai API documentation"
                 ),
             },
             {"name": cls.mcp, "description": "Endpoints enabled in the MCP server."},
@@ -51,10 +51,10 @@ class OpenAPIParameters(TypedDict):
 
 
 OPENAPI_PARAMETERS: OpenAPIParameters = {
-    "title": "Starterapp API",
-    "summary": "Starterapp HTTP API",
+    "title": "faskplusai API",
+    "summary": "faskplusai HTTP API",
     "version": "0.1.0",
-    "description": "Discover all of the ways you can interact with the Starterapp API",
+    "description": "Discover all of the ways you can interact with the faskplusai API",
     "docs_url": None
     if settings.is_environment(
         {Environment.preview, Environment.staging, Environment.production}
@@ -68,11 +68,11 @@ OPENAPI_PARAMETERS: OpenAPIParameters = {
     "openapi_tags": APITag.metadata(),  # type: ignore
     "servers": [
         {
-            "url": "https://api-starterapp.nestedmind.studio",
+            "url": "https://api-faskplusai.nestedmind.studio",
             "description": "Production environment",
         },
         {
-            "url": "https://stage-api-starterapp.nestedmind.studio",
+            "url": "https://stage-api-faskplusai.nestedmind.studio",
             "description": "Staging environment",
         },
     ],

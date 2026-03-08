@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Setup script for DigitalOcean droplet — Starterapp
+# Setup script for DigitalOcean droplet — faskplusai
 
 set -e
 
-echo "Setting up Starterapp on DigitalOcean..."
+echo "Setting up faskplusai on DigitalOcean..."
 
 # Update system
 echo "Updating system packages..."
@@ -29,8 +29,8 @@ sudo usermod -aG docker deploy
 
 # Setup deployment directories
 echo "Creating deployment directories..."
-sudo mkdir -p /home/deploy/opt/starterapp/{staging,preview,traefik}
-sudo chown -R deploy:deploy /home/deploy/opt/starterapp
+sudo mkdir -p /home/deploy/opt/faskplusai/{staging,preview,traefik}
+sudo chown -R deploy:deploy /home/deploy/opt/faskplusai
 
 # Create shared Traefik network
 echo "Creating shared Traefik network..."
@@ -64,7 +64,7 @@ echo "Installing certbot renewal hook..."
 sudo mkdir -p /etc/letsencrypt/renewal-hooks/deploy
 sudo tee /etc/letsencrypt/renewal-hooks/deploy/restart-traefik.sh > /dev/null <<'HOOK'
 #!/bin/bash
-docker restart starterapp_traefik 2>/dev/null || true
+docker restart faskplusai_traefik 2>/dev/null || true
 HOOK
 sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/restart-traefik.sh
 

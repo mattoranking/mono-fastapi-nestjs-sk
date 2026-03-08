@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.STAGING_SSH_KEY }}
           envs: SLUG
           script: |
-            APP_DIR=/home/deploy/opt/starterapp/preview/${SLUG}
+            APP_DIR=/home/deploy/opt/faskplusai/preview/${SLUG}
             if [ -d "$APP_DIR" ]; then
               cd $APP_DIR
               docker compose down -v
@@ -130,7 +130,7 @@ jobs:
     needs: [build-and-push]
     environment:
       name: test
-      url: https://${{ needs.build-and-push.outputs.slug }}.test-starterapp.nestedmind.studio
+      url: https://${{ needs.build-and-push.outputs.slug }}.test-faskplusai.nestedmind.studio
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -153,7 +153,7 @@ jobs:
             set -e
 
             # ---- Ensure shared Traefik is running ----
-            TRAEFIK_DIR=/home/deploy/opt/starterapp/traefik
+            TRAEFIK_DIR=/home/deploy/opt/faskplusai/traefik
             mkdir -p $TRAEFIK_DIR
             docker network create traefik-public 2>/dev/null || true
 
@@ -161,7 +161,7 @@ jobs:
             services:
               traefik:
                 image: traefik:v3.6
-                container_name: starterapp_traefik
+                container_name: faskplusai_traefik
                 command:
                   - "--api.dashboard=false"
                   - "--providers.docker=true"
@@ -209,7 +209,7 @@ jobs:
 
             # ---- Deploy preview ----
             MAX_PREVIEWS=5
-            PREVIEW_DIR=/home/deploy/opt/starterapp/preview
+            PREVIEW_DIR=/home/deploy/opt/faskplusai/preview
             mkdir -p $PREVIEW_DIR
 
             # Enforce max preview limit
@@ -243,27 +243,27 @@ jobs:
             services:
               db:
                 image: postgres:15-alpine
-                container_name: starterapp_db_preview_${SLUG}
+                container_name: faskplusai_db_preview_${SLUG}
                 environment:
-                  - POSTGRES_USER=starterapp
+                  - POSTGRES_USER=faskplusai
                   - POSTGRES_PASSWORD=${TEST_DB_PASSWORD}
-                  - POSTGRES_DB=starterapp_preview_${SLUG}
+                  - POSTGRES_DB=faskplusai_preview_${SLUG}
                 volumes:
                   - postgres_data:/var/lib/postgresql/data
                 networks:
                   - internal
                 restart: unless-stopped
                 healthcheck:
-                  test: ["CMD-SHELL", "pg_isready -U starterapp"]
+                  test: ["CMD-SHELL", "pg_isready -U faskplusai"]
                   interval: 10s
                   timeout: 5s
                   retries: 5
 
               backend:
                 image: ${BACKEND_IMG}
-                container_name: starterapp_backend_preview_${SLUG}
+                container_name: faskplusai_backend_preview_${SLUG}
                 environment:
-                  DATABASE_URL: postgresql://starterapp:${TEST_DB_PASSWORD}@db:5432/starterapp_preview_${SLUG}
+                  DATABASE_URL: postgresql://faskplusai:${TEST_DB_PASSWORD}@db:5432/faskplusai_preview_${SLUG}
                   GEMINI_API_KEY: ${GEMINI_API_KEY}
                   ENVIRONMENT: test
                 expose:
@@ -276,7 +276,7 @@ jobs:
                   - traefik-public
                 labels:
                   - "traefik.enable=true"
-                  - "traefik.http.routers.${SLUG}-backend.rule=Host(`${SLUG}.test-api-starterapp.nestedmind.studio`)"
+                  - "traefik.http.routers.${SLUG}-backend.rule=Host(`${SLUG}.test-api-faskplusai.nestedmind.studio`)"
                   - "traefik.http.routers.${SLUG}-backend.entrypoints=websecure"
                   - "traefik.http.routers.${SLUG}-backend.tls=true"
                   - "traefik.http.services.${SLUG}-backend.loadbalancer.server.port=8000"
@@ -295,7 +295,7 @@ jobs:
 
               frontend:
                 image: ${FRONTEND_IMG}
-                container_name: starterapp_frontend_preview_${SLUG}
+                container_name: faskplusai_frontend_preview_${SLUG}
                 environment:
                   API_URL: http://backend:8000
                   NODE_ENV: development
@@ -308,7 +308,7 @@ jobs:
                   - traefik-public
                 labels:
                   - "traefik.enable=true"
-                  - "traefik.http.routers.${SLUG}-frontend.rule=Host(`${SLUG}.test-starterapp.nestedmind.studio`)"
+                  - "traefik.http.routers.${SLUG}-frontend.rule=Host(`${SLUG}.test-faskplusai.nestedmind.studio`)"
                   - "traefik.http.routers.${SLUG}-frontend.entrypoints=websecure"
                   - "traefik.http.routers.${SLUG}-frontend.tls=true"
                   - "traefik.http.services.${SLUG}-frontend.loadbalancer.server.port=3000"
@@ -356,8 +356,8 @@ jobs:
 
             docker compose ps
             echo "Preview deployed:"
-            echo "  Frontend: https://${SLUG}.test-starterapp.nestedmind.studio"
-            echo "  API:      https://${SLUG}.test-api-starterapp.nestedmind.studio"
+            echo "  Frontend: https://${SLUG}.test-faskplusai.nestedmind.studio"
+            echo "  API:      https://${SLUG}.test-api-faskplusai.nestedmind.studio"
             echo "  Commit:   ${SHORT_SHA}"
 
       - name: Comment PR with preview URL
@@ -366,8 +366,8 @@ jobs:
           script: |
             const slug = '${{ needs.build-and-push.outputs.slug }}';
             const sha = '${{ needs.build-and-push.outputs.short_sha }}';
-            const frontendUrl = `https://${slug}.test-starterapp.nestedmind.studio`;
-            const apiUrl = `https://${slug}.test-api-starterapp.nestedmind.studio`;
+            const frontendUrl = `https://${slug}.test-faskplusai.nestedmind.studio`;
+            const apiUrl = `https://${slug}.test-api-faskplusai.nestedmind.studio`;
             const branch = context.ref.replace('refs/heads/', '');
 
             const { data: prs } = await github.rest.pulls.list({

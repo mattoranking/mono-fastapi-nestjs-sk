@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from starterapp.main import app
+from faskplusai.main import app
 
 client = TestClient(app)
 

@@ -1,7 +1,7 @@
 services:
   traefik:
     image: traefik:v3.6
-    container_name: starterapp_traefik_prod
+    container_name: faskplusai_traefik_prod
     command:
       - "--api.dashboard=false"
       - "--providers.docker=true"
@@ -28,11 +28,11 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: starterapp_db_prod
+    container_name: faskplusai_db_prod
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME:-starterapp_db}
+      POSTGRES_DB: ${DB_NAME:-faskplusai_db}
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     networks:
@@ -46,9 +46,9 @@ services:
 
   backend:
     image: ghcr.io/${GITHUB_REPOSITORY}/backend:latest
-    container_name: starterapp_backend_prod
+    container_name: faskplusai_backend_prod
     environment:
-      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME:-starterapp_db}
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME:-faskplusai_db}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       ENVIRONMENT: production
     expose:
@@ -86,7 +86,7 @@ services:
 
   frontend:
     image: ghcr.io/${GITHUB_REPOSITORY}/frontend:latest
-    container_name: starterapp_frontend_prod
+    container_name: faskplusai_frontend_prod
     environment:
       API_URL: http://backend:8000
       NODE_ENV: production

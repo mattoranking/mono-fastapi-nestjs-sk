@@ -1,10 +1,14 @@
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import TypedDict
 
+import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from starterapp.api import router
-from starterapp.health.endpoints import router as health_router
+from faskplusai.api import router
+from faskplusai.config import settings
+from faskplusai.health.endpoints import router as health_router
 
 
 def configure_cors(app: FastAPI) -> None:
@@ -29,10 +33,10 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Starterapp API",
-        description="Welcome to the Starterapp API documentation."
+        title="faskplusai API",
+        description="Welcome to the faskplusai API documentation."
                     "Here you will be able to discover all of the "
-                    "ways you can interact with the Starterapp API.",
+                    "ways you can interact with the faskplusai API.",
         lifespan=lifespan,
     )
 

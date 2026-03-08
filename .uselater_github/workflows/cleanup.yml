@@ -37,7 +37,7 @@ jobs:
           envs: ACTIVE_BRANCHES
           script: |
             set -e
-            PREVIEW_DIR=/home/deploy/opt/starterapp/preview
+            PREVIEW_DIR=/home/deploy/opt/faskplusai/preview
 
             echo "========================================="
             echo "  Stale Preview Cleanup"

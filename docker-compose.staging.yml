@@ -1,13 +1,13 @@
 # Staging compose — uses shared Traefik instance on traefik-public network.
-# Traefik is managed separately at /home/deploy/opt/starterapp/traefik/.
+# Traefik is managed separately at /home/deploy/opt/faskplusai/traefik/.
 services:
   db:
     image: postgres:15-alpine
-    container_name: starterapp_db_staging
+    container_name: faskplusai_db_staging
     environment:
       POSTGRES_USER: ${DB_USER:-ais_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME:-starterapp_staging_db}
+      POSTGRES_DB: ${DB_NAME:-faskplusai_staging_db}
     volumes:
       - postgres_staging_data:/var/lib/postgresql/data
     networks:
@@ -20,9 +20,9 @@ services:
       retries: 5
 
   backend:
-    image: ghcr.io/nestedmind/starterapp/backend:staging
+    image: ghcr.io/nestedmind/faskplusai/backend:staging
     environment:
-      DATABASE_URL: postgresql://${DB_USER:-ais_user}:${DB_PASSWORD}@db:5432/${DB_NAME:-starterapp_staging_db}
+      DATABASE_URL: postgresql://${DB_USER:-ais_user}:${DB_PASSWORD}@db:5432/${DB_NAME:-faskplusai_staging_db}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       ENVIRONMENT: staging
     expose:
@@ -58,7 +58,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/nestedmind/starterapp/frontend:staging
+    image: ghcr.io/nestedmind/faskplusai/frontend:staging
     environment:
       API_URL: http://backend:8000
       NODE_ENV: production
