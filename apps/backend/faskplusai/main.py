@@ -36,7 +36,8 @@ def configure_cors(app: FastAPI) -> None:
         CORSMiddleware,
         allow_origins=[
             "http://localhost:3000",
-            "https://faskplusai.dev"],  # NestJS frontend
+            "https://faskplusai.dev",
+        ],  # NestJS frontend
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -114,8 +115,7 @@ def create_app() -> FastAPI:
 
 # Module-level initialization
 configure_logging(
-    level="DEBUG" if settings.DEBUG else "INFO",
-    json_output=settings.is_production()
+    level="DEBUG" if settings.DEBUG else "INFO", json_output=settings.is_production()
 )
 
 app = create_app()

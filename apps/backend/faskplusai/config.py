@@ -35,11 +35,11 @@ class Settings(BaseSettings):
     DATABASE_POOL_RECYCLE_SECONDS: int = 300  # 5 minutes
 
     # Primary database (read-write)
-    POSTGRES_USER: str = "skywise"
-    POSTGRES_PWD: str = "skywise"
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PWD: str = "postgres"
     POSTGRES_HOST: str = "127.0.0.1"
     POSTGRES_PORT: int = 5432
-    POSTGRES_DATABASE: str = "skywise_db"
+    POSTGRES_DATABASE: str = "faskplusai_db"
 
     # Read replica (optional - falls back to primary if not set)
     POSTGRES_READ_HOST: str | None = None

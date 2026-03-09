@@ -68,20 +68,20 @@ OPENAPI_PARAMETERS: OpenAPIParameters = {
     "openapi_tags": APITag.metadata(),  # type: ignore
     "servers": [
         {
-            "url": "https://api-faskplusai.nestedmind.studio",
-            "description": "Production environment",
-        },
-        {
-            "url": "https://stage-api-faskplusai.nestedmind.studio",
-            "description": "Staging environment",
-        },
-        {
             "url": "https://api.faskplusai.dev",
             "description": "Development environment",
         },
         {
             "url": "http://localhost:8000",
             "description": "Development environment",
+        },
+        {
+            "url": "https://api-faskplusai.nestedmind.studio",
+            "description": "Production environment",
+        },
+        {
+            "url": "https://stage-api-faskplusai.nestedmind.studio",
+            "description": "Staging environment",
         },
     ],
 }
