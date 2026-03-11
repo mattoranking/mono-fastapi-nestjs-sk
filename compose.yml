@@ -68,7 +68,8 @@ services:
       dockerfile: Dockerfile
     container_name: faskplusai_dev_frontend
     environment:
-      API_URL: https://api.faskplusai.dev
+      NEXT_PUBLIC_API_URL: https://api.faskplusai.dev
+      NODE_ENV: development
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`faskplusai.dev`)"
@@ -83,7 +84,8 @@ services:
       - app-network
     volumes:
       - ./apps/frontend:/app
-    command: sh -c "pnpm install --force && rm -rf dist && pnpm run dev"
+    user: root
+    command: sh -c "pnpm install && pnpm run dev"
 
   db-test:
     image: postgres:15-alpine

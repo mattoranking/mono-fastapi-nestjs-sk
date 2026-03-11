@@ -1,161 +1,173 @@
-# Starter App
+# FaskPlusAI Starter App
 
-A full-stack monorepo starter kit built with **NestJS** (frontend) and **FastAPI** (backend). Pre-configured with Turborepo, Docker, PostgreSQL, Tailwind CSS, and AI tooling — clone and start building.
-
----
-
-## What's Included
-
-| Layer | Technology | Details |
-|-------|-----------|---------|
-| **Frontend** | NestJS 11 + Handlebars + Tailwind CSS | Server-rendered views with WebSocket support |
-| **Backend** | FastAPI + SQLAlchemy + Alembic | Async Python API with auto-generated docs |
-| **AI** | Google Gemini + MCP | Chat interface with Model Context Protocol servers |
-| **Database** | PostgreSQL 15 | Managed via Alembic migrations |
-| **Monorepo** | Turborepo + pnpm 8 | Parallel builds, caching, shared packages |
-| **Infra** | Docker Compose | One-command dev environment |
+A full-stack monorepo starter kit built with **NextJS** (frontend) and **FastAPI** (backend). Pre-configured with Turborepo, Docker, PostgreSQL, Tailwind CSS, and AI tooling — clone and start building.
 
 ---
 
-## Prerequisites
+## Tech Stack
 
-- **Node.js** >= 20
-- **pnpm** >= 8
-- **Python** >= 3.13
-- **uv** (Python package manager)
-- **Docker & Docker Compose** (optional, for containerised dev)
+- **Frontend**: Next.js + React + Tailwind CSS
+- **Backend**: FastAPI (Python)
+- **AI**: Google Gemini + MCP
+- **Database**: PostgreSQL
+- **Monorepo**: Turborepo + pnpm
+- **Deployment**: Docker + DigitalOcean
 
----
+## Getting Started
 
-## Quick Start
+### Prerequisites
 
-### 1. Clone & install
+- Node.js 20+
+- Python 3.13+
+- pnpm 8+
+- uv (Python package manager)
+- Docker & Docker Compose
 
+### Installation
+
+1. Clone the repository
 ```bash
-git clone <your-repo-url> my-app
-cd my-app
+git clone <your-repo-url>
+cd faskplusai
+```
 
-# Node dependencies
+2. Install dependencies
+```bash
+# Install Node dependencies
 pnpm install
 
-# Python dependencies
-cd apps/backend && uv sync && cd ../..
+# Install Python dependencies
+cd apps/backend
+uv sync
+cd ../..
 ```
 
-### 2. Configure environment
-
+3. Set up environment variables
 ```bash
 cp .env.example .env
-# Edit .env with your database credentials, API keys, etc.
+# Edit .env with your values
 ```
 
-### 3. Run (choose one)
+4. Start development servers
 
-**Option A — Turborepo (recommended for development)**
-
+Start both frontend and backend concurrently from the project root:
 ```bash
-# Both frontend and backend in parallel
 pnpm start
-
-# Or individually
-pnpm start:frontend   # http://localhost:3000
-pnpm start:backend    # http://localhost:8000
 ```
 
-**Option B — Docker Compose**
-
+Or start them individually:
 ```bash
-docker-compose up      # Starts PostgreSQL + backend + frontend
-docker-compose up -d   # Detached mode
-docker-compose down    # Stop and remove containers
+# Start frontend only
+pnpm start:frontend
+
+# Start backend only
+pnpm start:backend
 ```
 
-Each app has its own multi-stage Dockerfile:
-
-- **Frontend** (`apps/frontend/Dockerfile`) — Builds on `node:20-alpine`, compiles Tailwind CSS, bundles the NestJS app, and includes a health check on `/health`.
-- **Backend** (`apps/backend/Dockerfile`) — Builds on `python:3.11-slim`, installs dependencies with `uv`, and includes a health check on `/health`.
-
-The `docker-compose.yml` orchestrates three services: **PostgreSQL 15**, **backend** (port 8000), and **frontend** (port 3000), with hot-reload via bind-mounted source directories.
-
----
+5. Or use Docker
+```bash
+docker compose up
+```
 
 ## Project Structure
-
 ```
+skywise/
 ├── apps/
-│   ├── frontend/              # NestJS application
-│   │   ├── Dockerfile         # Multi-stage Docker build
-│   │   ├── src/
-│   │   │   ├── modules/       # Feature modules (chat, clients, …)
-│   │   │   ├── styles/        # Tailwind CSS
-│   │   │   └── main.ts        # App entry point
-│   │   ├── views/             # Handlebars templates
-│   │   └── public/            # Static assets (CSS/JS)
-│   │
-│   └── backend/               # FastAPI application
-│       ├── Dockerfile         # Multi-stage Docker build
-│       ├── app/
-│       │   ├── api/           # Route handlers
-│       │   ├── models/        # SQLAlchemy models
-│       │   ├── services/      # Business logic
-│       │   ├── chat/          # AI chat module
-│       │   ├── core/          # Config, security, deps
-│       │   └── main.py        # App entry point
-│       ├── alembic/           # Database migrations
-│       ├── mcp_servers/       # MCP server definitions
-│       └── tests/             # Pytest test suite
-│
-├── packages/                  # Shared packages (add your own)
-├── docker-compose.yml         # Container orchestration
-├── turbo.json                 # Turborepo pipeline config
-└── pnpm-workspace.yaml        # pnpm workspace definition
+│   ├── frontend/          # Next.js application
+│   │   ├── app/           # App Router pages
+│   │   ├── components/    # React components
+│   │   ├── lib/           # API client & utilities
+│   │   └── public/        # Static assets
+│   └── backend/           # FastAPI application
+│       ├── faskplusai/    # Main package
+│       ├── alembic/       # Database migrations
+│       └── tests/         # Test suite
+├── packages/              # Shared packages
+├── scripts/               # Deployment scripts
+├── traefik/               # Traefik proxy config
+├── .github/workflows/     # CI/CD pipelines
+└── compose.yml            # Docker orchestration
 ```
 
----
+## Development
 
-## Development URLs
+- Frontend: https://faskplusai.dev (via Traefik) or http://localhost:3000
+- Backend: https://api.faskplusai.dev (via Traefik) or http://localhost:8000
+- API Docs: http://localhost:8000/docs
+- Traefik Dashboard: http://localhost:8080
 
-| Service | URL |
-|---------|-----|
-| Frontend | [http://localhost:3000](http://localhost:3000) |
-| Backend API | [http://localhost:8000](http://localhost:8000) |
-| API Docs (Swagger) | [http://localhost:8000/docs](http://localhost:8000/docs) |
-| API Docs (ReDoc) | [http://localhost:8000/redoc](http://localhost:8000/redoc) |
+## Deployment Workflow
 
----
+### Branch Strategy
 
-## Common Commands
+- **develop**: Development branch, no auto-deployment
+- **main**: Staging environment (auto-deploys on push)
+- **tags (vX.Y.Z)**: Production releases (auto-deploys on tag)
 
+### Creating a Release
+
+#### Option 1: Using the script (recommended)
 ```bash
-pnpm dev              # Start all services in dev mode
-pnpm build            # Build all apps
-pnpm lint             # Lint all apps
-pnpm test             # Run all tests
-pnpm format           # Format code with Prettier
-
-# Backend only
-cd apps/backend
-uv run pytest                          # Run tests
-uv run alembic upgrade head            # Apply migrations
-uv run alembic revision --autogenerate -m "description"  # Create migration
-
-# Frontend only
-cd apps/frontend
-pnpm test              # Unit tests
-pnpm test:e2e          # End-to-end tests
+./scripts/create-release.sh
 ```
 
----
+Follow the prompts to select release type:
+- **Major** (v2.0.0): Breaking changes
+- **Minor** (v1.1.0): New features
+- **Patch** (v1.0.1): Bug fixes
 
-## Customising This Starter
+#### Option 2: Manual tag creation
+```bash
+# Ensure you're on main
+git checkout main
+git pull origin main
 
-1. **Rename the project** — update `name` in the root [package.json](package.json) and [pyproject.toml](apps/backend/pyproject.toml)
-2. **Add shared packages** — create a new folder under `packages/` and reference it in [pnpm-workspace.yaml](pnpm-workspace.yaml)
-3. **Add backend routes** — create modules under `apps/backend/app/api/`
-4. **Add frontend features** — generate NestJS modules with `nest g module modules/<name>` inside `apps/frontend/`
-5. **Configure AI** — set your Gemini API key in `.env` and customise MCP servers in `apps/backend/mcp_servers/`
+# Create and push tag
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
 
----
+#### Option 3: GitHub UI
+
+Go to Actions > Create Release > Run workflow
+
+### Deployment Flow
+```
+1. Develop feature
+   └─► Push to develop branch
+
+2. Create PR: develop → main
+   └─► CI runs (tests, linting)
+
+3. Merge to main
+   └─► Auto-deploy to STAGING
+   └─► Test on staging environment
+
+4. Create release tag (v1.0.0)
+   └─► Auto-deploy to PRODUCTION
+   └─► GitHub Release created
+
+5. Monitor deployment
+   └─► Health checks run automatically
+   └─► Rollback on failure
+```
+
+### Rollback
+
+If something goes wrong in production:
+```bash
+# Quick rollback
+./scripts/rollback.sh
+
+# Or manually
+git checkout <previous-tag>
+git push origin <previous-tag>-rollback
+```
+
+### Environments
+
+- **Staging**: https://staging.yourdomain.com (main branch)
+- **Production**: https://yourdomain.com (tags only)
 
 ## License
 
