@@ -1,8 +1,8 @@
 node_modules
-dist
+.next
 .git
 .gitignore
 *.md
 *.tsbuildinfo
 coverage
-.nyc_output
+.env*
