@@ -71,7 +71,7 @@ docker compose up
 
 ## Project Structure
 ```
-skywise/
+faskplusai/
 ├── apps/
 │   ├── frontend/          # Next.js application
 │   │   ├── app/           # App Router pages
