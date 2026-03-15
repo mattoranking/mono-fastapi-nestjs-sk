@@ -29,6 +29,12 @@ class Settings(BaseSettings):
     ENV: Environment = Environment.development
     DEBUG: bool = False
 
+    # Auth / JWT
+    JWT_SECRET_KEY: str = "change-me-in-production"
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
     # Connection pool settings
     DATABASE_POOL_SIZE: int = 5
     DATABASE_SYNC_POOL_SIZE: int = 1
@@ -73,7 +79,7 @@ class Settings(BaseSettings):
         )
 
     model_config = SettingsConfigDict(
-        env_prefix="faskplusai_",
+        env_prefix="FASKPLUSAI_",
         env_file_encoding="utf-8",
         case_sensitive=False,
         env_file=env_file,
