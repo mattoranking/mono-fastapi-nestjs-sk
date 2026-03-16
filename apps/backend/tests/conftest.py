@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from faskplusai.config import settings
-from faskplusai.database import Base
+from faskplusai.utils.db.models import Model
 
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
@@ -22,13 +22,13 @@ async def engine() -> AsyncGenerator[AsyncEngine]:
 
     # Create all tables
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(Model.metadata.create_all)
 
     yield engine
 
     # Drop all tables
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Model.metadata.drop_all)
 
     await engine.dispose()
 

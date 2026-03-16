@@ -8,7 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from faskplusai.api import router
 from faskplusai.config import settings
-from faskplusai.database import (
+from faskplusai.health.endpoints import router as health_router
+from faskplusai.logging import Logger, configure_logging
+from faskplusai.openapi import OPENAPI_PARAMETERS
+from faskplusai.postgres import (
+    AsyncSessionMiddleware,
+    create_async_engine,
+    create_async_read_engine,
+)
+from faskplusai.utils.db.database import (
     AsyncEngine,
     AsyncReadSessionMaker,
     AsyncSessionMaker,
@@ -18,24 +26,12 @@ from faskplusai.database import (
     create_async_sessionmaker,
     create_sync_sessionmaker,
 )
-from faskplusai.health.endpoints import router as health_router
-from faskplusai.logging import Logger, configure_logging
-from faskplusai.openapi import OPENAPI_PARAMETERS
-from faskplusai.postgres import (
-    AsyncSessionMiddleware,
-    create_async_engine,
-    create_async_read_engine,
-)
 
 log: Logger = structlog.get_logger()
 
 
 def configure_cors(app: FastAPI) -> None:
-    origins = [
-        o.strip()
-        for o in settings.CORS_ORIGINS.split(",")
-        if o.strip()
-    ]
+    origins = [o.strip() for o in settings.CORS_ORIGINS.split(",") if o.strip()]
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,

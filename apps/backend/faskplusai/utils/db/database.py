@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.ext.asyncio import (
     create_async_engine as _create_async_engine,
 )
-from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 
 class AsyncReadSession(AsyncSession):
@@ -23,10 +23,6 @@ type SessionMaker = sessionmaker[Session]
 type AsyncSessionMaker = async_sessionmaker[AsyncSession]
 
 type AsyncReadSessionMaker = async_sessionmaker[AsyncReadSession]
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 def create_sync_engine(
@@ -89,7 +85,6 @@ __all__ = [
     "AsyncReadSessionMaker",
     "AsyncSession",
     "AsyncSessionMaker",
-    "Base",
     "Engine",
     "Session",
     "SessionMaker",

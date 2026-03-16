@@ -5,7 +5,7 @@ from fastapi import Request
 from starlette.types import ASGIApp, Receive, Scope, Send
 
 from faskplusai.config import settings
-from faskplusai.database import (
+from faskplusai.utils.db.database import (
     AsyncEngine,
     AsyncReadSession,
     AsyncReadSessionMaker,
@@ -13,8 +13,8 @@ from faskplusai.database import (
     AsyncSessionMaker,
     Engine,
 )
-from faskplusai.database import create_async_engine as _create_async_engine
-from faskplusai.database import create_sync_engine as _create_sync_engine
+from faskplusai.utils.db.database import create_async_engine as _create_async_engine
+from faskplusai.utils.db.database import create_sync_engine as _create_sync_engine
 
 type ProcessName = Literal["faskplusai"]
 
